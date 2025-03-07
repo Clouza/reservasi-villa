@@ -57,8 +57,39 @@ if (isset($_POST['login'])) {
 <html>
 <head>
     <title>Landing Page - Reservasi Villa</title>
+
+    <style>
+        p, a, h1, h2, li, label {
+            color: white;
+        }
+
+        .bg-container {
+            position: absolute;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+        }
+
+        .bg-container::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4); /* Opacity hitam rendah */
+        }
+
+        .bg-img {
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            display: block;
+        }
+    </style>
 </head>
 <body>
+    <div class="bg-container">
+        <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/17/71/7b/30/one-bedroom-royal-pool.jpg?w=1000&h=-1&s=1" alt="background" class="bg-img">
+    </div>
     <h1>Selamat Datang di Website Reservasi Villa</h1>
     <p>Silakan login terlebih dahulu.</p>
 
