@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 
+use App\Core\Database;
 use PDO;
 
 /*
@@ -29,7 +30,7 @@ class Booking extends BaseModel {
     }
 
     public static function findById($id) {
-        $db = \App\Core\Database::getInstance()->getConnection();
+        $db = Database::getInstance()->getConnection();
         $stmt = $db->prepare("SELECT * FROM bookings WHERE id=?");
         $stmt->execute([$id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -48,7 +49,7 @@ class Booking extends BaseModel {
 
     // Contoh method: ambil semua booking
     public static function all() {
-        $db = \App\Core\Database::getInstance()->getConnection();
+        $db = Database::getInstance()->getConnection();
         $stmt = $db->query("SELECT * FROM bookings");
         $results = [];
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {

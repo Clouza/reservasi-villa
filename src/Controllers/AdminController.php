@@ -1,6 +1,7 @@
 <?php
 namespace App\Controllers;
 
+use App\Core\Database;
 use App\Models\Villa;
 
 class AdminController {
@@ -41,7 +42,11 @@ class AdminController {
     public function deleteVilla($id) {
         $villa = Villa::findById($id);
         if ($villa) {
-            $db = $villa->db;
+            if ($villa->image && file_exists(UPLOAD_PATH . $villa->image)) {
+                unlink(UPLOAD_PATH . $villa->image);
+            }
+
+            $db = Database::getInstance()->getConnection();
             $stmt = $db->prepare("DELETE FROM villas WHERE id=?");
             $stmt->execute([$id]);
             // Opsional: hapus file foto di folder uploads jika ingin
