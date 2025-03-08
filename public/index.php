@@ -1,14 +1,11 @@
 <?php
 /*
     index.php - Landing page + Form Login
-    Gunakan session_start() agar bisa menggunakan session.
 */
 session_start();
-
 require_once __DIR__ . '/config.php';
 
-// Kita butuh autoload manual atau require semua file.
-// Sederhananya, require file inti satu per satu (atau gunakan composer autoload kalau mau).
+// require_once ... (semua file inti, sama seperti contoh sebelumnya)
 require_once __DIR__ . '/../src/Core/Database.php';
 require_once __DIR__ . '/../src/Models/ModelInterface.php';
 require_once __DIR__ . '/../src/Models/BaseModel.php';
@@ -32,7 +29,7 @@ if (isset($_SESSION['role'])) {
     }
 }
 
-// Proses login jika ada submit
+// Proses login
 $message = '';
 if (isset($_POST['login'])) {
     $email = $_POST['email'];
@@ -41,7 +38,6 @@ if (isset($_POST['login'])) {
     $auth = new AuthController();
     $loginSuccess = $auth->login($email, $password);
     if ($loginSuccess) {
-        // Berhasil login, cek role
         if ($_SESSION['role'] === 'admin') {
             header('Location: admin.php');
         } else {
@@ -54,57 +50,49 @@ if (isset($_POST['login'])) {
 }
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+    <meta charset="UTF-8">
     <title>Landing Page - Reservasi Villa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 
     <style>
-        p, a, h1, h2, li, label {
-            color: white;
-        }
-
-        .bg-container {
-            position: absolute;
-            inset: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-        }
-
-        .bg-container::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.4); /* Opacity hitam rendah */
-        }
-
-        .bg-img {
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
-            display: block;
+        * {
+            font-family: "Inter", sans-serif;
         }
     </style>
 </head>
-<body>
-    <div class="bg-container">
-        <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/17/71/7b/30/one-bedroom-royal-pool.jpg?w=1000&h=-1&s=1" alt="background" class="bg-img">
+
+<body class="h-screen grid md:grid-cols-2">
+    <div class="flex justify-center flex-col px-4 sm:px-12 lg:px-24">
+        <h1 class="text-2xl font-bold mb-4 text-center">Selamat Datang</h1>
+        <p class="text-center text-gray-500 mb-6">Silakan login untuk melanjutkan.</p>
+
+        <?php if ($message): ?>
+            <div class="text-red-500 mb-4 text-center">
+                <?php echo $message; ?>
+            </div>
+        <?php endif; ?>
+
+        <form method="POST" action="">
+            <div class="mb-4">
+                <label class="block text-gray-700 mb-2">Email:</label>
+                <input type="text" name="email" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring" placeholder="Masukkan email anda">
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700 mb-2">Password:</label>
+                <input type="password" name="password" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring" placeholder="Masukkan password anda">
+            </div>
+            <button type="submit" name="login" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-colors hover:cursor-pointer">
+                Login
+            </button>
+        </form>
     </div>
-    <h1>Selamat Datang di Website Reservasi Villa</h1>
-    <p>Silakan login terlebih dahulu.</p>
-
-    <?php if ($message): ?>
-        <p style="color: red;"><?php echo $message; ?></p>
-    <?php endif; ?>
-
-    <form method="POST" action="">
-        <label>Email:</label><br>
-        <input type="text" name="email"><br><br>
-
-        <label>Password:</label><br>
-        <input type="password" name="password"><br><br>
-
-        <button type="submit" name="login">Login</button>
-    </form>
+    <img class="hidden md:block h-full object-cover" src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Villa">
 </body>
+
 </html>

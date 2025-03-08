@@ -6,8 +6,8 @@
 
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'reservasi_villa');
-define('DB_USER', 'admin'); // default: root
-define('DB_PASS', 'admin'); // kosongkan jika tidak ada password
+define('DB_USER', 'root'); // default: root
+define('DB_PASS', ''); // kosongkan jika tidak ada password
 
 // Opsi path untuk upload foto
 define('UPLOAD_PATH', __DIR__ . '/uploads/');
