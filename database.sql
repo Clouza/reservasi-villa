@@ -75,3 +75,10 @@ VALUES
 INSERT INTO `bookings` (`user_id`, `villa_id`, `booking_date`, `status`)
 VALUES
 (2, 1, '2025-03-10', 'pending');
+
+ALTER TABLE `bookings`
+ADD COLUMN `days` INT NOT NULL DEFAULT 1 AFTER `booking_date`,
+ADD COLUMN `price_per_day` DECIMAL(10,2) NOT NULL DEFAULT 0 AFTER `days`,
+ADD COLUMN `total_payment` DECIMAL(10,2) NOT NULL DEFAULT 0 AFTER `price_per_day`,
+ADD COLUMN `payment_method` VARCHAR(50) DEFAULT 'cash' AFTER `total_payment`,
+ADD COLUMN `payment_proof` VARCHAR(255) DEFAULT NULL AFTER `payment_method`;

@@ -2,7 +2,7 @@
 session_start();
 require_once __DIR__ . '/config.php';
 
-// require file inti
+// Require file inti
 require_once __DIR__ . '/../src/Core/Database.php';
 require_once __DIR__ . '/../src/Models/ModelInterface.php';
 require_once __DIR__ . '/../src/Models/BaseModel.php';
@@ -16,6 +16,7 @@ require_once __DIR__ . '/../src/Controllers/AdminController.php';
 use App\Controllers\AuthController;
 use App\Controllers\AdminController;
 use App\Controllers\BookingController;
+use App\Models\Villa;
 
 // Cek login & role admin
 if (!AuthController::isLoggedIn() || $_SESSION['role'] !== 'admin') {
@@ -70,21 +71,12 @@ $villas = $adminCtrl->getAllVillas();
 $allBookings = $bookingCtrl->getAllBookings();
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <title>Halaman Admin - Reservasi Villa</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-
-    <style>
-        * {
-            font-family: "Inter", sans-serif;
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-gray-100 min-h-screen">
@@ -92,19 +84,13 @@ $allBookings = $bookingCtrl->getAllBookings();
     <nav class="bg-white shadow mb-6">
         <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
             <h1 class="text-xl font-bold">Panel Admin</h1>
-            <a href="logout.php" class="text-red-600 hover:underline">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
-                </svg>
-            </a>
+            <a href="logout.php" class="text-red-600 hover:underline">Logout</a>
         </div>
     </nav>
 
     <div class="max-w-6xl mx-auto px-4">
         <?php if ($message): ?>
-            <div class="mb-4 text-green-600 font-semibold">
-                <?php echo $message; ?>
-            </div>
+            <div class="mb-4 text-green-600 font-semibold"><?php echo $message; ?></div>
         <?php endif; ?>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -114,20 +100,14 @@ $allBookings = $bookingCtrl->getAllBookings();
                 <form method="POST" action="" enctype="multipart/form-data">
                     <input type="hidden" name="id" value="">
 
-                    <div class="mb-4">
-                        <label class="block mb-2 text-sm font-medium text-gray-700">Nama Villa:</label>
-                        <input type="text" name="name" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring" placeholder="Masukkan nama villa">
-                    </div>
+                    <label class="block mb-2 text-sm font-medium text-gray-700">Nama Villa:</label>
+                    <input type="text" name="name" class="w-full border rounded px-3 py-2 mb-2 focus:outline-none focus:ring" placeholder="Masukkan nama villa">
 
-                    <div class="mb-4">
-                        <label class="block mb-2 text-sm font-medium text-gray-700">Deskripsi Villa:</label>
-                        <textarea name="description" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring" rows="4" placeholder="Deskripsi singkat villa"></textarea>
-                    </div>
+                    <label class="block mb-2 text-sm font-medium text-gray-700">Deskripsi Villa:</label>
+                    <textarea name="description" class="w-full border rounded px-3 py-2 mb-2 focus:outline-none focus:ring" rows="4" placeholder="Deskripsi singkat villa"></textarea>
 
-                    <div class="mb-4">
-                        <label class="block mb-2 text-sm font-medium text-gray-700">Foto Villa:</label>
-                        <input type="file" name="villa_image" class="w-full">
-                    </div>
+                    <label class="block mb-2 text-sm font-medium text-gray-700">Foto Villa:</label>
+                    <input type="file" name="villa_image" class="w-full mb-4">
 
                     <button type="submit" name="save_villa" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors hover:cursor-pointer">
                         Simpan Villa
@@ -171,40 +151,52 @@ $allBookings = $bookingCtrl->getAllBookings();
                     <thead>
                         <tr class="bg-gray-200">
                             <th class="py-2 px-4 border">ID</th>
-                            <th class="py-2 px-4 border">User ID</th>
-                            <th class="py-2 px-4 border">Villa ID</th>
-                            <th class="py-2 px-4 border">Tanggal Booking</th>
+                            <th class="py-2 px-4 border">Nama Villa</th>
+                            <th class="py-2 px-4 border">Tanggal</th>
+                            <th class="py-2 px-4 border">Durasi (hari)</th>
+                            <th class="py-2 px-4 border">Total Harga</th>
+                            <th class="py-2 px-4 border">Metode Bayar</th>
+                            <th class="py-2 px-4 border">Bukti</th>
                             <th class="py-2 px-4 border">Status</th>
-                            <th class="py-2 px-4 border">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($allBookings as $booking): ?>
-                            <tr>
-                                <td class="py-2 px-4 border"><?php echo $booking->id; ?></td>
-                                <td class="py-2 px-4 border"><?php echo $booking->user_id; ?></td>
-                                <td class="py-2 px-4 border"><?php echo $booking->villa_id; ?></td>
-                                <td class="py-2 px-4 border"><?php echo $booking->booking_date; ?></td>
-                                <td class="py-2 px-4 border"><?php echo $booking->status; ?></td>
-                                <td class="py-2 px-4 border">
-                                    <form method="POST" action="" class="flex items-center">
-                                        <input type="hidden" name="booking_id" value="<?php echo $booking->id; ?>">
-                                        <select name="new_status" class="border rounded px-2 py-1 mr-2 focus:outline-none focus:ring">
-                                            <option value="pending" <?php if ($booking->status == 'pending') echo 'selected'; ?>>Pending</option>
-                                            <option value="confirmed" <?php if ($booking->status == 'confirmed') echo 'selected'; ?>>Confirmed</option>
-                                            <option value="cancelled" <?php if ($booking->status == 'cancelled') echo 'selected'; ?>>Cancelled</option>
-                                        </select>
-                                        <button type="submit" name="update_status" class="bg-green-600 text-white py-1 px-3 rounded hover:bg-green-700 transition-colors">
-                                            Update
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
+                        <?php $villa = Villa::findById($booking->villa_id); ?>
+                        <tr>
+                            <td class="py-2 px-4 border"><?php echo $booking->id; ?></td>
+                            <td class="py-2 px-4 border"><?php echo $villa ? $villa->name : 'N/A'; ?></td>
+                            <td class="py-2 px-4 border"><?php echo $booking->booking_date; ?></td>
+                            <td class="py-2 px-4 border"><?php echo $booking->days; ?></td>
+                            <td class="py-2 px-4 border">Rp <?php echo number_format($booking->total_payment, 2); ?></td>
+                            <td class="py-2 px-4 border"><?php echo $booking->payment_method; ?></td>
+                            <td class="py-2 px-4 border">
+                                <?php if ($booking->payment_method === 'transfer' && $booking->payment_proof): ?>
+                                    <a href="uploads/<?php echo $booking->payment_proof; ?>" target="_blank" class="text-blue-600 hover:underline">Lihat Bukti</a>
+                                <?php else: ?>
+                                    (Cash)
+                                <?php endif; ?>
+                            </td>
+                            <td class="py-2 px-4 border">
+                                <form method="POST" action="" class="flex items-center">
+                                    <input type="hidden" name="booking_id" value="<?php echo $booking->id; ?>">
+                                    <select name="new_status" class="border rounded px-2 py-1 mr-2 focus:outline-none focus:ring">
+                                        <option value="pending" <?php if ($booking->status == 'pending') echo 'selected'; ?>>Pending</option>
+                                        <option value="confirmed" <?php if ($booking->status == 'confirmed') echo 'selected'; ?>>Confirmed</option>
+                                        <option value="cancelled" <?php if ($booking->status == 'cancelled') echo 'selected'; ?>>Cancelled</option>
+                                    </select>
+                                    <button type="submit" name="update_status" class="bg-green-600 text-white py-1 px-3 rounded hover:bg-green-700 transition-colors">
+                                        Update
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
         </div>
+
     </div>
 
 </body>
